@@ -24,7 +24,7 @@ void ASawmillBuilding::BeginPlay()
 	BuildCost = 500;
 
 	GetWorldTimerManager().SetTimer(ProductionTimerHandle, this, &ASawmillBuilding::ProduceResource_Implementation, 20.0f, true);
-	GetWorldTimerManager().SetTimer(ProductionTimerHandle, this, &ASawmillBuilding::Upkeep, 300.0f, true);
+	GetWorldTimerManager().SetTimer(UpKeepTimerHandle, this, &ASawmillBuilding::Upkeep, 300.0f, true);
 	ResourceManager->RemoveResource(TEXT("Planks"), PlanksNeeded);
 	ResourceManager->RemoveResource(TEXT("Workers"), WorkersNeeded);
 	ResourceManager->RemoveResource(TEXT("Money"), BuildCost);

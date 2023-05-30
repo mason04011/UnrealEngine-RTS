@@ -21,7 +21,7 @@ void AWoodBuilding::BeginPlay()
 	Super::BeginPlay();
 
 	GetWorldTimerManager().SetTimer(ProductionTimerHandle, this, &AWoodBuilding::ProduceResource_Implementation, 20.0f, true);
-	GetWorldTimerManager().SetTimer(ProductionTimerHandle, this, &AWoodBuilding::Upkeep, 300.0f, true);
+	GetWorldTimerManager().SetTimer(UpKeepTimerHandle, this, &AWoodBuilding::Upkeep, 300.0f, true);
 	ResourceManager->RemoveResource(TEXT("Planks"), PlanksNeeded);
 	ResourceManager->RemoveResource(TEXT("Workers"), WorkforceNeeded);
 	ResourceManager->RemoveResource(TEXT("Money"), BuildCost);

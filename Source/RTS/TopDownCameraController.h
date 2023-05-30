@@ -27,6 +27,16 @@ public:
 	void ZoomOut();
 	
 	void PlaceBuilding();
+
+	void StopBuildingPlacement();
+
+	void BuildingSelectTownHall();
+	
+	void BuildingSelectSawMill();
+	
+	void BuildingSelectLumberJack();
+	
+	void BuildingSelectWorkerHouse();
 	
 
 
@@ -51,7 +61,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 	UPROPERTY(EditAnywhere)
 	float SpringArmLength = 600.0f;
 
@@ -102,5 +112,11 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
 	TSubclassOf<AActor> Floor;
+
+	bool bCanPlaceBuilding;
+
+	TSubclassOf<AActor> BuildingToSpawn;
 	
 };
+
+

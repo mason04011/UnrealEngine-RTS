@@ -24,6 +24,14 @@ void AGhostBuilding::SetGhostBuildingInactive()
 	bGhostBuildingActive = false;
 }
 
+void AGhostBuilding::DestroySelf()
+{
+	if(bDestroySelf)
+	{
+		Destroy();
+	}
+}
+
 // Called when the game starts or when spawned
 void AGhostBuilding::BeginPlay()
 {
@@ -69,10 +77,17 @@ void AGhostBuilding::Tick(float DeltaTime)
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, TraceParams))
 		{
 			FVector HitLocation = HitResult.ImpactPoint;
-
-		SetActorLocation(HitLocation);
+			if(ABuilding* BuildingClass = Cast<ABuilding>( HitResult.GetActor()))
+			{
+				return;
+			}else
+			{
+				SetActorLocation(HitLocation);
+			}
 		}
 	}
+
+	DestroySelf();
 
 }
 

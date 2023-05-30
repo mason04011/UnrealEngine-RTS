@@ -19,6 +19,7 @@ public:
 
 	void SetGhostBuildingActive();
 	void SetGhostBuildingInactive();
+	void DestroySelf();
 
 protected:
 	// Called when the game starts or when spawned
@@ -29,12 +30,22 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	bool bGhostBuildingActive;
+	
 	FVector MousePosition;
+	
 	FViewport* Viewport;
+	
 	FHitResult HitResult;
+	
 	FVector MouseDirection;
+	
 	FVector TraceStart;
+	
 	FVector TraceEnd;
+	
 	float TraceDistance = 300000.f;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool bDestroySelf = false;
 
 };

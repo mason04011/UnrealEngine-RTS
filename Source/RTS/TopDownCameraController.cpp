@@ -3,9 +3,12 @@
 
 #include "TopDownCameraController.h"
 
+#include "GhostBuilding.h"
 #include "WoodBuilding.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Engine/EngineTypes.h"
+#include "Kismet/GameplayStatics.h"
 
 
 // Sets default values
@@ -33,6 +36,8 @@ ATopDownCameraController::ATopDownCameraController()
 
 	//Take control of the default Player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
+
+	
 
 
 }
@@ -67,8 +72,60 @@ void ATopDownCameraController::ZoomOut()
 void ATopDownCameraController::PlaceBuilding()
 {
 	FActorSpawnParameters SpawnParams;
+	if(bCanPlaceBuilding)
+	{
+		GetWorld()->SpawnActor<AActor>(BuildingToSpawn,HitLocation, HitRotation, SpawnParams);
+	}
+}
+
+void ATopDownCameraController::StopBuildingPlacement()
+{
+	BuildingToSpawn = nullptr;
 	
-	AActor* BuildingToSpawn = GetWorld()->SpawnActor<AActor>(LumberJack,HitLocation, HitRotation, SpawnParams);
+	// Find all actors of class AGhostBuilding
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGhostBuilding::StaticClass(), FoundActors);
+
+	// Iterate over the found actors and modify the boolean variable
+	for (AActor* Actor : FoundActors)
+	{
+		AGhostBuilding* GhostBuildingActor = Cast<AGhostBuilding>(Actor);
+		if (GhostBuildingActor != nullptr)
+		{
+			GhostBuildingActor->bDestroySelf = true;
+		}
+	}
+}
+
+/* functions to bind to the UI buttons in order to pick which building should be spawned in the SpawnBuilding funciton */
+
+void ATopDownCameraController::BuildingSelectTownHall()
+{
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	BuildingToSpawn = TownHall;
+	UE_LOG(LogTemp, Warning, TEXT("TownHall is building to be spawned"));
+}
+
+void ATopDownCameraController::BuildingSelectSawMill()
+{
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	BuildingToSpawn = Sawmill;
+}
+
+void ATopDownCameraController::BuildingSelectLumberJack()
+{
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	BuildingToSpawn = LumberJack;
+}
+
+void ATopDownCameraController::BuildingSelectWorkerHouse()
+{
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	BuildingToSpawn = WorkerHouse;
 }
 
 
@@ -102,7 +159,7 @@ void ATopDownCameraController::Tick(float DeltaTime)
 			ZoomInput = 0;
 		}
 
-		SpringArmLength += (ZoomInput * 150) * DeltaTime;
+		SpringArmLength += (ZoomInput * 400) * DeltaTime;
 		SpringArmComp->TargetArmLength = SpringArmLength;
 		bZoomingIn = false;
 		bZoomingOut = false;
@@ -150,9 +207,21 @@ void ATopDownCameraController::Tick(float DeltaTime)
 
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, TraceParams))
 		{
-			
 			HitLocation = HitResult.ImpactPoint;
 			HitRotation.Pitch = HitResult.ImpactPoint.Rotation().Pitch;
+
+			ABuilding* BuildingClass = Cast<ABuilding>( HitResult.GetActor());
+			
+			if(BuildingClass)
+			{
+				bCanPlaceBuilding = false;
+				GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Cyan, FString::Printf(TEXT("ActorName: %s"), *HitResult.GetActor()->GetName()));
+
+			}else
+			{
+				bCanPlaceBuilding = true;
+			}
+
 			
 		}
 	}
@@ -167,6 +236,7 @@ void ATopDownCameraController::SetupPlayerInputComponent(UInputComponent* Player
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 	InputComponent->BindAction("PrimaryMouse", IE_Pressed,this, &ATopDownCameraController::PlaceBuilding);
+	InputComponent->BindAction("SecondaryMouse", IE_Pressed,this, &ATopDownCameraController::StopBuildingPlacement);
 	
 	//Hook up events for "ZoomIn"
 	InputComponent->BindAction("ZoomIn", IE_Pressed,this, &ATopDownCameraController::ZoomIn);

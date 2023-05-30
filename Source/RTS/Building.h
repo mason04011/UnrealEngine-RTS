@@ -25,6 +25,8 @@ public:
 	ABuilding();
 
 	FTimerHandle ProductionTimerHandle;
+	FTimerHandle TaxTimerHandle;
+	FTimerHandle UpKeepTimerHandle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Building")
 	EResourceType ProvidedResource;
