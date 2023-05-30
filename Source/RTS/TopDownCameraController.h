@@ -14,7 +14,6 @@ class RTS_API ATopDownCameraController : public APawn
 public:
 	// Sets default values for this pawn's properties
 	ATopDownCameraController();
-
 	
 	void MoveForward(float AxisValue);
 	
@@ -37,6 +36,14 @@ public:
 	void BuildingSelectLumberJack();
 	
 	void BuildingSelectWorkerHouse();
+
+	void BuildingSelectFarmHouse();
+
+	void BuildingSelectBrewery();
+
+	void BuildingSelectBakery();
+
+	float HappinessCalculation();
 	
 
 
@@ -61,6 +68,31 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfTownHalls = 0;
+	
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfWorkerHouses = 0;
+
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfLumberJacks = 0;
+
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfSawMills = 0;
+
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfFarmHouses = 0;
+	
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfBakeries = 0;
+
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfBreweries = 0;
+
+
+
+	int Morale = 50;
 	
 	UPROPERTY(EditAnywhere)
 	float SpringArmLength = 600.0f;
@@ -111,7 +143,14 @@ public:
 	TSubclassOf<AActor> GhostBuilding;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
-	TSubclassOf<AActor> Floor;
+	TSubclassOf<AActor> FarmHouse;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
+	TSubclassOf<AActor> Brewery;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Spawning")
+	TSubclassOf<AActor> Bakery;
+	
 
 	bool bCanPlaceBuilding;
 

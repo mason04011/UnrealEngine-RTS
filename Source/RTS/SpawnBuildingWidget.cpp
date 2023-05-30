@@ -36,6 +36,21 @@ bool USpawnBuildingWidget::Initialize()
 		Button_LumberJack->OnClicked.AddDynamic(this, &USpawnBuildingWidget::LumberJackButtonPressed);
 	}
 
+	if(Button_FarmHouse)
+	{
+		Button_FarmHouse->OnClicked.AddDynamic(this, &USpawnBuildingWidget::FarmHouseButtonPressed);
+	}
+
+	if(Button_Bakery)
+	{
+		Button_Bakery->OnClicked.AddDynamic(this, &USpawnBuildingWidget::BakeryButtonPressed);
+	}
+
+	if(Button_Brewery)
+	{
+		Button_Brewery->OnClicked.AddDynamic(this, &USpawnBuildingWidget::BreweryButtonPressed);
+	}
+
 
 	return success;
 }
@@ -60,4 +75,19 @@ void USpawnBuildingWidget::LumberJackButtonPressed()
 void USpawnBuildingWidget::SawmillButtonPressed()
 {
 	TopDownPlayer->BuildingSelectSawMill();
+}
+
+void USpawnBuildingWidget::FarmHouseButtonPressed()
+{
+	TopDownPlayer->BuildingSelectFarmHouse();
+}
+
+void USpawnBuildingWidget::BakeryButtonPressed()
+{
+	TopDownPlayer->BuildingSelectBakery();
+}
+
+void USpawnBuildingWidget::BreweryButtonPressed()
+{
+	TopDownPlayer->BuildingSelectBrewery();
 }

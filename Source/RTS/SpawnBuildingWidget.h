@@ -35,6 +35,15 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* Button_LumberJack;
 
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Button_FarmHouse;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Button_Bakery;
+
+	UPROPERTY(meta = (BindWidget))
+	class UButton* Button_Brewery;
+
 private:
 	
 	UFUNCTION()
@@ -48,4 +57,13 @@ private:
 
 	UFUNCTION()
 	void SawmillButtonPressed();
+
+	UFUNCTION()
+	void FarmHouseButtonPressed();
+
+	UFUNCTION()
+	void BakeryButtonPressed();
+
+	UFUNCTION()
+	void BreweryButtonPressed();
 };

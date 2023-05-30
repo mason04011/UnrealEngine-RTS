@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "GridManager.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "RTSGameModeBase.generated.h"

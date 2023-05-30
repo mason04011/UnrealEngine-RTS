@@ -6,6 +6,7 @@
 #include "ResourceManager.generated.h"
 
 
+
 USTRUCT(BlueprintType)
 struct FResource
 {
@@ -35,26 +36,40 @@ class RTS_API UResourceManager : public UGameInstanceSubsystem
 	GENERATED_BODY()
 
 public:
+
 	UResourceManager();
+	
+	bool BreadDemandMet();
 	
 	UFUNCTION(BlueprintCallable)
 	void AddResource(const FString& ResourceName, int32 Amount);
+	
 	UFUNCTION(BlueprintCallable)
 	void RemoveResource(const FString& ResourceName, int32 Amount);
+	
 	UFUNCTION(BlueprintCallable)
 	void PreloadResources();
+	
 	UFUNCTION(BlueprintCallable)
 	int32 GetResourceAmount(const FString& ResourceName) const;
+	
 	UFUNCTION(BlueprintCallable)
 	int32 GetWoodAmount() const;
+	
 	UFUNCTION(BlueprintCallable)
 	int32 GetPlanksAmount() const;
+	
 	UFUNCTION(BlueprintCallable)
 	int32 GetWorkersAmount() const;
+	
 	UFUNCTION(BlueprintCallable)
 	int32 GetBalance() const;
+	
 	UPROPERTY(VisibleAnywhere)
 	int32 MaxResource = 100;
+
+	UPROPERTY(VisibleAnywhere)
+	int32 BreadDemand;
 
 protected:
 

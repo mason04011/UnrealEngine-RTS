@@ -4,6 +4,7 @@
 
 #include "Building.h"
 #include "CoreMinimal.h"
+#include "TopDownCameraController.h"
 #include "GameFramework/Actor.h"
 #include "WorkerBuilding.generated.h"
 
@@ -16,9 +17,8 @@ public:
 	// Sets default values for this actor's properties
 	AWorkerBuilding();
 	void Tax();
-	void CalculateHappiness();
 
-	float TaxBoost();
+
 
 protected:
 	// Called when the game starts or when spawned

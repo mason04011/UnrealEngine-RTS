@@ -38,97 +38,8 @@ ATopDownCameraController::ATopDownCameraController()
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
 	
-
-
-}
-
-void ATopDownCameraController::MoveForward(float AxisValue)
-{
-	MovementInput.X = AxisValue;
-}
-
-void ATopDownCameraController::MoveRight(float AxisValue)
-{
-	MovementInput.Y = AxisValue;
-}
-
-void ATopDownCameraController::YawCamera(float AxisValue)
-{
-	RotateYaw.X = AxisValue;
-	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf(TEXT("yaw should be set")));
-}
-
-void ATopDownCameraController::ZoomIn()
-{
-	bZoomingIn = true;
 	
 }
-
-void ATopDownCameraController::ZoomOut()
-{
-	bZoomingOut = true;
-}
-
-void ATopDownCameraController::PlaceBuilding()
-{
-	FActorSpawnParameters SpawnParams;
-	if(bCanPlaceBuilding)
-	{
-		GetWorld()->SpawnActor<AActor>(BuildingToSpawn,HitLocation, HitRotation, SpawnParams);
-	}
-}
-
-void ATopDownCameraController::StopBuildingPlacement()
-{
-	BuildingToSpawn = nullptr;
-	
-	// Find all actors of class AGhostBuilding
-	TArray<AActor*> FoundActors;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGhostBuilding::StaticClass(), FoundActors);
-
-	// Iterate over the found actors and modify the boolean variable
-	for (AActor* Actor : FoundActors)
-	{
-		AGhostBuilding* GhostBuildingActor = Cast<AGhostBuilding>(Actor);
-		if (GhostBuildingActor != nullptr)
-		{
-			GhostBuildingActor->bDestroySelf = true;
-		}
-	}
-}
-
-/* functions to bind to the UI buttons in order to pick which building should be spawned in the SpawnBuilding funciton */
-
-void ATopDownCameraController::BuildingSelectTownHall()
-{
-	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
-	BuildingToSpawn = TownHall;
-	UE_LOG(LogTemp, Warning, TEXT("TownHall is building to be spawned"));
-}
-
-void ATopDownCameraController::BuildingSelectSawMill()
-{
-	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
-	BuildingToSpawn = Sawmill;
-}
-
-void ATopDownCameraController::BuildingSelectLumberJack()
-{
-	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
-	BuildingToSpawn = LumberJack;
-}
-
-void ATopDownCameraController::BuildingSelectWorkerHouse()
-{
-	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
-	BuildingToSpawn = WorkerHouse;
-}
-
-
 
 // Called when the game starts or when spawned
 void ATopDownCameraController::BeginPlay()
@@ -143,6 +54,7 @@ void ATopDownCameraController::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 
+	GEngine->AddOnScreenDebugMessage(3, 2.f, FColor::Cyan, FString::Printf(TEXT("TownHalls: %d"), NumberOfTownHalls));
 	//Zooming in and out using the spring arm camera component
 	{
 		if(bZoomingIn)
@@ -200,7 +112,6 @@ void ATopDownCameraController::Tick(float DeltaTime)
 		TraceParams.AddIgnoredActor(this);
 		TraceParams.AddIgnoredActor(GetOwner());
 
-
 		
 		TraceStart = MousePosition;
 		TraceEnd = TraceStart + (MouseDirection * TraceDistance);  // Set the desired trace distance
@@ -221,14 +132,10 @@ void ATopDownCameraController::Tick(float DeltaTime)
 			{
 				bCanPlaceBuilding = true;
 			}
-
 			
 		}
 	}
-
-
 	
-
 }
 
 void ATopDownCameraController::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -247,6 +154,180 @@ void ATopDownCameraController::SetupPlayerInputComponent(UInputComponent* Player
 	InputComponent->BindAxis("MoveVertically", this, &ATopDownCameraController::MoveForward);
 	InputComponent->BindAxis("MoveHorizontally", this, &ATopDownCameraController::MoveRight);
 	InputComponent->BindAxis("RotateYaw", this, &ATopDownCameraController::YawCamera);
+}
+
+
+
+/* ========================= functions to bind to the UI buttons in order to pick which building should be spawned in the SpawnBuilding funciton ========================= */
+
+void ATopDownCameraController::BuildingSelectTownHall()
+{
+	StopBuildingPlacement();
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	BuildingToSpawn = TownHall;
+	NumberOfTownHalls +=1;
+	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf(TEXT("TownHall is building to be spawned")));
+}
+
+
+void ATopDownCameraController::BuildingSelectSawMill()
+{
+	StopBuildingPlacement();
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	BuildingToSpawn = Sawmill;
+	NumberOfSawMills += 1;
+	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("Sawmill is building to be spawned")));
+}
+
+void ATopDownCameraController::BuildingSelectLumberJack()
+{
+	StopBuildingPlacement();
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	BuildingToSpawn = LumberJack;
+	NumberOfLumberJacks += 1;
+	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf(TEXT("lumberjack is building to be spawned")));
+}
+
+void ATopDownCameraController::BuildingSelectWorkerHouse()
+{
+	StopBuildingPlacement();
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	NumberOfWorkerHouses += 1;
+	BuildingToSpawn = WorkerHouse;
+	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("workers house is building to be spawned")));
+}
+
+void ATopDownCameraController::BuildingSelectFarmHouse()
+{
+	StopBuildingPlacement();
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	NumberOfFarmHouses += 1;
+	BuildingToSpawn = FarmHouse;
+	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("Farmhouse is building to be spawned")));
+}
+
+void ATopDownCameraController::BuildingSelectBrewery()
+{
+	StopBuildingPlacement();
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	NumberOfBreweries += 1;
+	BuildingToSpawn = Brewery;
+	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("Brewery is building to be spawned")));
+}
+
+void ATopDownCameraController::BuildingSelectBakery()
+{
+	StopBuildingPlacement();
+	FActorSpawnParameters SpawnParams;
+	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
+	NumberOfBakeries += 1;
+	BuildingToSpawn = Bakery;
+	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("Bakery is building to be spawned")));
+}
+
+/* ========================== Happienes Tax aplied to worker buildings ======================================================== */
+
+float ATopDownCameraController::HappinessCalculation()
+{
+	UResourceManager* ResourceManager = Cast<UResourceManager>(GetWorld()->GetClass());
+	if(ResourceManager)
+	{
+		if (ResourceManager->BreadDemandMet())
+		{
+			Morale += 5;
+		}
+	}
+
+
+	if (Morale >= 100)
+	{
+		return 0.3f;
+	}
+
+	if (Morale >= 90)
+	{
+		return 0.25f;
+	}
+
+	if (Morale >= 80)
+	{
+		return 0.22f;
+	}
+
+	if (Morale >= 70)
+	{
+		return 0.2f;
+	}
+
+	if (Morale >= 60)
+	{
+		return 0.15f;
+	}
+
+	return 0.1f;
+}
+
+/*================================================================ Functions used by Action/Axis maps =======================================================*/
+
+void ATopDownCameraController::MoveForward(float AxisValue)
+{
+	MovementInput.X = AxisValue;
+}
+
+void ATopDownCameraController::MoveRight(float AxisValue)
+{
+	MovementInput.Y = AxisValue;
+}
+
+void ATopDownCameraController::YawCamera(float AxisValue)
+{
+	RotateYaw.X = AxisValue;
+}
+
+void ATopDownCameraController::ZoomIn()
+{
+	bZoomingIn = true;
+	
+}
+
+void ATopDownCameraController::ZoomOut()
+{
+	bZoomingOut = true;
+}
+
+void ATopDownCameraController::PlaceBuilding()
+{
+	FActorSpawnParameters SpawnParams;
+	if(bCanPlaceBuilding)
+	{
+		GetWorld()->SpawnActor<AActor>(BuildingToSpawn,HitLocation, HitRotation, SpawnParams);
+		UE_LOG(LogTemp, Warning, TEXT("Placed"));
+	}
+}
+
+void ATopDownCameraController::StopBuildingPlacement()
+{
+	BuildingToSpawn = nullptr;
+	
+	// Find all actors of class AGhostBuilding
+	TArray<AActor*> FoundActors;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AGhostBuilding::StaticClass(), FoundActors);
+
+	// Iterate over the found actors and modify the boolean variable
+	for (AActor* Actor : FoundActors)
+	{
+		AGhostBuilding* GhostBuildingActor = Cast<AGhostBuilding>(Actor);
+		if (GhostBuildingActor != nullptr)
+		{
+			GhostBuildingActor->bDestroySelf = true;
+		}
+	}
 }
 
 

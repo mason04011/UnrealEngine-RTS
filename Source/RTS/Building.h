@@ -13,15 +13,25 @@ UCLASS()
 class RTS_API ABuilding : public AActor
 {
 	GENERATED_BODY()
-    
+
+protected:
+	
+	void BeginPlay();
+	
 public:
+
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> BuildingFrame;
+
+	UPROPERTY(EditAnywhere)
+	TObjectPtr<UStaticMeshComponent> BuildingBoundary;
 	
 	UPROPERTY()
 	UResourceManager* ResourceManager;
 	
-	void BeginPlay();
 	ABuilding();
 
 	FTimerHandle ProductionTimerHandle;

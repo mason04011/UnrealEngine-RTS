@@ -44,11 +44,11 @@ bool ASawmillBuilding::CanProduceResource_Implementation() const
 
 void ASawmillBuilding::ProduceResource_Implementation()
 {
-	int32 TotalWood = ResourceManager->GetWoodAmount();
-	int32 TotalPlanks = ResourceManager->GetPlanksAmount();
+	int32 TotalWood = ResourceManager->GetResourceAmount(TEXT("Wood"));
+	int32 TotalPlanks = ResourceManager->GetResourceAmount(TEXT("Planks"));
 	if(TotalWood > 0)
 	{
-		if(TotalPlanks < ResourceManager->MaxResource -2 )
+		if(TotalPlanks < ResourceManager->MaxResource -3 )
 		{
 			ResourceManager->RemoveResource(TEXT("Wood"), 1);
 			ResourceManager->AddResource(TEXT("Planks"), 3);

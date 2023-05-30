@@ -12,6 +12,8 @@ AGhostBuilding::AGhostBuilding()
 	PrimaryActorTick.bCanEverTick = true;
 	bGhostBuildingActive = true;
 
+	BuildingFrame->SetRelativeScale3D(FVector(1.f, 1.f, 1.f)); 
+
 }
 
 void AGhostBuilding::SetGhostBuildingActive()

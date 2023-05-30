@@ -67,8 +67,9 @@ if(!ResourceManager)
 
 void AWoodBuilding::ProduceResource_Implementation()
 {
-	int32 TotalWood = ResourceManager->GetWoodAmount();
-	if(TotalWood < ResourceManager->MaxResource)
+	int32 TotalWood = ResourceManager->GetResourceAmount(TEXT("Wood"));
+	
+	if(CanProduceResource_Implementation() && TotalWood < ResourceManager->MaxResource)
 	{
 		ResourceManager->AddResource(TEXT("Wood"), 1);
 		UE_LOG(LogTemp, Warning, TEXT("Producing wood resource!"));

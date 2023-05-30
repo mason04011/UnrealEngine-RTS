@@ -3,6 +3,8 @@
 
 #include "WorkerBuilding.h"
 
+#include "TopDownCameraController.h"
+
 // Sets default values
 AWorkerBuilding::AWorkerBuilding()
 {
@@ -13,26 +15,12 @@ AWorkerBuilding::AWorkerBuilding()
 
 void AWorkerBuilding::Tax()
 {
-	TaxBoost();
-	ResourceManager->AddResource(TEXT("Money"), (BuildCost * TaxPercentage));
+	ATopDownCameraController* TopDownPlayer = Cast<ATopDownCameraController>(GetWorld()->GetClass());
+	HappinessTax = TopDownPlayer->HappinessCalculation();
+	ResourceManager->AddResource(TEXT("Money"), (BuildCost * HappinessTax));
 }
 
-void AWorkerBuilding::CalculateHappiness()
-{
-	if(bHasFood)
-	{
-		Happiness += 1;
-	}
-	if(bHasBooze)
-	{
-		Happiness += 1; 
-	}
-}
 
-float AWorkerBuilding::TaxBoost()
-{
-	return Happiness * 0.1f;
-}
 
 // Called when the game starts or when spawned
 void AWorkerBuilding::BeginPlay()
