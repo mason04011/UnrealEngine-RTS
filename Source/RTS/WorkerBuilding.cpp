@@ -15,9 +15,9 @@ AWorkerBuilding::AWorkerBuilding()
 
 void AWorkerBuilding::Tax()
 {
-	ATopDownCameraController* TopDownPlayer = Cast<ATopDownCameraController>(GetWorld()->GetClass());
-	HappinessTax = TopDownPlayer->HappinessCalculation();
-	ResourceManager->AddResource(TEXT("Money"), (BuildCost * HappinessTax));
+	//ATopDownCameraController* TopDownPlayer = Cast<ATopDownCameraController>(GetWorld()->GetClass());
+	//HappinessTax = TopDownPlayer->Happiness();
+	//ResourceManager->AddResource(TEXT("Money"), (BuildCost * HappinessTax));
 }
 
 
@@ -27,7 +27,7 @@ void AWorkerBuilding::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GetWorldTimerManager().SetTimer(ProductionTimerHandle, this, &AWorkerBuilding::Tax, 300.0f, true);
+	//GetWorldTimerManager().SetTimer(ProductionTimerHandle, this, &AWorkerBuilding::Tax, 300.0f, true);
 
 	ResourceManager->AddResource(TEXT("Workers"), WorkersProvided);
 	ResourceManager->RemoveResource(TEXT("Planks"), PlanksNeeded);

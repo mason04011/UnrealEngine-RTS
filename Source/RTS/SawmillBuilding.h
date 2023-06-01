@@ -28,13 +28,11 @@ public:
 	virtual void ProduceResource_Implementation() override;
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-private:
 	
 	UPROPERTY(VisibleAnywhere, Category = "Resources")
 	int32 PlanksNeeded = 10;
 	UPROPERTY(VisibleAnywhere, Category = "Resources")
-	int32 WorkersNeeded = 5;
+	int32 WorkForceNeeded = 10;
 	
 
 };

@@ -21,7 +21,7 @@ void AFarmHouse::BeginPlay()
 
 	GetWorldTimerManager().SetTimer(ProductionTimerHandle, this, &AFarmHouse::ProduceResource_Implementation, 60.0f, true);
 	ResourceManager->RemoveResource(TEXT("Planks"), PlanksNeeded);
-	ResourceManager->RemoveResource(TEXT("Workers"), WorkersNeeded);
+	ResourceManager->RemoveResource(TEXT("Workers"), WorkForceNeeded);
 	ResourceManager->RemoveResource(TEXT("Money"), BuildCost);
 
 	

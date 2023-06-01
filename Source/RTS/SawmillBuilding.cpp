@@ -26,7 +26,7 @@ void ASawmillBuilding::BeginPlay()
 	GetWorldTimerManager().SetTimer(ProductionTimerHandle, this, &ASawmillBuilding::ProduceResource_Implementation, 20.0f, true);
 	GetWorldTimerManager().SetTimer(UpKeepTimerHandle, this, &ASawmillBuilding::Upkeep, 300.0f, true);
 	ResourceManager->RemoveResource(TEXT("Planks"), PlanksNeeded);
-	ResourceManager->RemoveResource(TEXT("Workers"), WorkersNeeded);
+	ResourceManager->RemoveResource(TEXT("Workers"), WorkForceNeeded);
 	ResourceManager->RemoveResource(TEXT("Money"), BuildCost);
 	
 }
@@ -35,7 +35,7 @@ bool ASawmillBuilding::CanProduceResource_Implementation() const
 {
 	int32 Workers = ResourceManager->GetResourceAmount(TEXT("Workers"));
 
-	if(Workers >= WorkersNeeded)
+	if(Workers >= WorkForceNeeded)
 	{
 		return true;
 	}

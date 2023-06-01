@@ -1,8 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "TopDownCameraController.h"
 
+#include "TopDownCameraController.h"
+#include "ResourceManager.h"
+#include "Engine/World.h"
 #include "GhostBuilding.h"
 #include "WoodBuilding.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -36,7 +38,7 @@ ATopDownCameraController::ATopDownCameraController()
 
 	//Take control of the default Player
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
-
+	
 	
 	
 }
@@ -45,13 +47,17 @@ ATopDownCameraController::ATopDownCameraController()
 void ATopDownCameraController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+
+	//GetWorldTimerManager().SetTimer(ResourceProductionHandle, this, &ATopDownCameraController::Production, 30.0f, true);
+	GetWorldTimerManager().SetTimer(HappinessTimerHandle, this, &ATopDownCameraController::HappinessCalculation, 300.0f, true);
 }
 
 // Called every frame
 void ATopDownCameraController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
 
 
 	GEngine->AddOnScreenDebugMessage(3, 2.f, FColor::Cyan, FString::Printf(TEXT("TownHalls: %d"), NumberOfTownHalls));
@@ -166,6 +172,7 @@ void ATopDownCameraController::BuildingSelectTownHall()
 	FActorSpawnParameters SpawnParams;
 	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
 	BuildingToSpawn = TownHall;
+	WorkerCheck = 0;
 	NumberOfTownHalls +=1;
 	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf(TEXT("TownHall is building to be spawned")));
 }
@@ -177,6 +184,7 @@ void ATopDownCameraController::BuildingSelectSawMill()
 	FActorSpawnParameters SpawnParams;
 	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
 	BuildingToSpawn = Sawmill;
+	WorkerCheck = 10;
 	NumberOfSawMills += 1;
 	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("Sawmill is building to be spawned")));
 }
@@ -187,6 +195,7 @@ void ATopDownCameraController::BuildingSelectLumberJack()
 	FActorSpawnParameters SpawnParams;
 	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
 	BuildingToSpawn = LumberJack;
+	WorkerCheck = 10;
 	NumberOfLumberJacks += 1;
 	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf(TEXT("lumberjack is building to be spawned")));
 }
@@ -197,6 +206,7 @@ void ATopDownCameraController::BuildingSelectWorkerHouse()
 	FActorSpawnParameters SpawnParams;
 	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
 	NumberOfWorkerHouses += 1;
+	WorkerCheck = 0;
 	BuildingToSpawn = WorkerHouse;
 	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("workers house is building to be spawned")));
 }
@@ -207,6 +217,7 @@ void ATopDownCameraController::BuildingSelectFarmHouse()
 	FActorSpawnParameters SpawnParams;
 	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
 	NumberOfFarmHouses += 1;
+	WorkerCheck = 15;
 	BuildingToSpawn = FarmHouse;
 	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("Farmhouse is building to be spawned")));
 }
@@ -217,6 +228,7 @@ void ATopDownCameraController::BuildingSelectBrewery()
 	FActorSpawnParameters SpawnParams;
 	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
 	NumberOfBreweries += 1;
+	WorkerCheck = 5;
 	BuildingToSpawn = Brewery;
 	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("Brewery is building to be spawned")));
 }
@@ -227,50 +239,60 @@ void ATopDownCameraController::BuildingSelectBakery()
 	FActorSpawnParameters SpawnParams;
 	GetWorld()->SpawnActor<AActor>(GhostBuilding,HitLocation, HitRotation, SpawnParams);
 	NumberOfBakeries += 1;
+	WorkerCheck = 5;
 	BuildingToSpawn = Bakery;
 	GEngine->AddOnScreenDebugMessage(4, 1.f, FColor::Black, FString::Printf( TEXT("Bakery is building to be spawned")));
 }
 
 /* ========================== Happienes Tax aplied to worker buildings ======================================================== */
 
-float ATopDownCameraController::HappinessCalculation()
+void ATopDownCameraController::HappinessCalculation()
 {
 	UResourceManager* ResourceManager = Cast<UResourceManager>(GetWorld()->GetClass());
 	if(ResourceManager)
 	{
 		if (ResourceManager->BreadDemandMet())
 		{
-			Morale += 5;
+			Morale += 5; //THIS NEEDS TO BE REDONE SO IT WILL WORK AS RIGHT NOW EVERY TIME HAPPINESS IS CALCULATED BREAD WILL GIVE +5
 		}
 	}
 
 
 	if (Morale >= 100)
 	{
-		return 0.3f;
+		Happiness =  0.3f;
 	}
 
 	if (Morale >= 90)
 	{
-		return 0.25f;
+		Happiness = 0.25f;
 	}
 
 	if (Morale >= 80)
 	{
-		return 0.22f;
+		Happiness = 0.22f;
 	}
 
 	if (Morale >= 70)
 	{
-		return 0.2f;
+		Happiness = 0.2f;
 	}
 
 	if (Morale >= 60)
 	{
-		return 0.15f;
+		Happiness = 0.15f;
 	}
 
-	return 0.1f;
+	if(Morale <= 50)
+	{
+	Happiness = 0.1f;
+	}
+}
+
+void ATopDownCameraController::Production()
+{
+	UResourceManager* ResourceManager = GetGameInstance()->GetSubsystem<UResourceManager>();
+	ResourceManager->ProduceResources();
 }
 
 /*================================================================ Functions used by Action/Axis maps =======================================================*/
@@ -303,11 +325,17 @@ void ATopDownCameraController::ZoomOut()
 
 void ATopDownCameraController::PlaceBuilding()
 {
+	UResourceManager* ResourceManager = GetGameInstance()->GetSubsystem<UResourceManager>();
 	FActorSpawnParameters SpawnParams;
 	if(bCanPlaceBuilding)
 	{
-		GetWorld()->SpawnActor<AActor>(BuildingToSpawn,HitLocation, HitRotation, SpawnParams);
-		UE_LOG(LogTemp, Warning, TEXT("Placed"));
+		if(ResourceManager->GetWorkersAmount() >= WorkerCheck)
+		{
+			GetWorld()->SpawnActor<AActor>(BuildingToSpawn,HitLocation, HitRotation, SpawnParams);
+			UE_LOG(LogTemp, Warning, TEXT("Placed"));
+		}
+		
+		UE_LOG(LogTemp, Warning, TEXT("Not Enough Workers"));
 	}
 }
 

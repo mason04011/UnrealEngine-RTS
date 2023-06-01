@@ -30,7 +30,7 @@ private:
 	
 
 	UPROPERTY(VisibleAnywhere, Category = "Resources")
-	int32 WorkforceNeeded = 5;
+	int32 WorkforceNeeded = 10;
 	UPROPERTY(VisibleAnywhere, Category = "Resources")
 	int32 PlanksNeeded = 5;
 	

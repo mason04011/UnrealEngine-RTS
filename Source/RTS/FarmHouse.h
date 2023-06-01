@@ -33,6 +33,6 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Resources")
 	int32 PlanksNeeded = 20;
 	UPROPERTY(VisibleAnywhere, Category = "Resources")
-	int32 WorkersNeeded = 10;
+	int32 WorkForceNeeded = 15;
 
 };

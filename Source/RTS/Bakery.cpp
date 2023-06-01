@@ -20,7 +20,7 @@ void ABakery::BeginPlay()
 
 	GetWorldTimerManager().SetTimer(ProductionTimerHandle, this, &ABakery::ProduceResource_Implementation, 30.0f, true);
 	ResourceManager->RemoveResource(TEXT("Planks"), PlanksNeeded);
-	ResourceManager->RemoveResource(TEXT("Workers"), WorkersNeeded);
+	ResourceManager->RemoveResource(TEXT("Workers"), WorkerForceNeeded);
 	ResourceManager->RemoveResource(TEXT("Money"), BuildCost);
 
 	

@@ -28,6 +28,9 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+
+	UPROPERTY(VisibleAnywhere, Category = "Resources")
+	int32 WorkforceNeeded = 0;
 	UPROPERTY(VisibleAnywhere)
 	int32 WorkersProvided = 8;
 	UPROPERTY(VisibleAnywhere)

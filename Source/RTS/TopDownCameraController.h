@@ -43,7 +43,9 @@ public:
 
 	void BuildingSelectBakery();
 
-	float HappinessCalculation();
+	void HappinessCalculation();
+
+	void Production();
 	
 
 
@@ -62,37 +64,47 @@ protected:
 	UPROPERTY(EditAnywhere)
 	UStaticMeshComponent* StaticMeshComp;
 
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	FTimerHandle HappinessTimerHandle;
+
+	FTimerHandle ResourceProductionHandle;
 
 	UPROPERTY(VisibleAnywhere)
-	int NumberOfTownHalls = 0;
+	int32 NumberOfTownHalls = 0;
 	
 	UPROPERTY(VisibleAnywhere)
-	int NumberOfWorkerHouses = 0;
+	int32 NumberOfWorkerHouses = 0;
 
 	UPROPERTY(VisibleAnywhere)
-	int NumberOfLumberJacks = 0;
+	int32 NumberOfLumberJacks = 0;
 
 	UPROPERTY(VisibleAnywhere)
-	int NumberOfSawMills = 0;
+	int32 NumberOfSawMills = 0;
 
 	UPROPERTY(VisibleAnywhere)
-	int NumberOfFarmHouses = 0;
+	int32 NumberOfFarmHouses = 0;
 	
 	UPROPERTY(VisibleAnywhere)
-	int NumberOfBakeries = 0;
+	int32 NumberOfBakeries = 0;
 
 	UPROPERTY(VisibleAnywhere)
-	int NumberOfBreweries = 0;
+	int32 NumberOfBreweries = 0;
 
+	UPROPERTY(VisibleAnywhere)
+	int32 WorkerCheck;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Happiness")
+	int Morale = 70;
 
-	int Morale = 50;
+	UPROPERTY(VisibleAnywhere)
+	float Happiness;
 	
 	UPROPERTY(EditAnywhere)
 	float SpringArmLength = 600.0f;

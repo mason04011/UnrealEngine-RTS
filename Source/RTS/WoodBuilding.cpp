@@ -72,10 +72,6 @@ void AWoodBuilding::ProduceResource_Implementation()
 	if(CanProduceResource_Implementation() && TotalWood < ResourceManager->MaxResource)
 	{
 		ResourceManager->AddResource(TEXT("Wood"), 1);
-		UE_LOG(LogTemp, Warning, TEXT("Producing wood resource!"));
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Wood output is full!"));
-	}
+	
 }

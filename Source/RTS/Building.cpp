@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Building.h"
-#include "TopDownCameraController.h"
 #include "Components/StaticMeshComponent.h"
 
 void ABuilding::BeginPlay()

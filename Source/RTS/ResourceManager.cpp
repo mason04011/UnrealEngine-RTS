@@ -67,6 +67,31 @@ void UResourceManager::PreloadResources()
 	AddResource(TEXT("Beer"), 0);
 }
 
+
+// This function was going to replace the handling for resource production but, this will cause more problems for the future
+void UResourceManager::ProduceResources()
+{
+	ATopDownCameraController* TopDownPlayer = Cast<ATopDownCameraController>(GetWorld()->GetClass());
+
+	//LumberJack Building
+	AddResource(TEXT("Wood"), TopDownPlayer->NumberOfLumberJacks);
+
+	//SawMill Building
+	RemoveResource(TEXT("Wood"), TopDownPlayer->NumberOfSawMills);
+	AddResource(TEXT("Planks"),TopDownPlayer->NumberOfSawMills*3);
+
+	//FarmHouse Building
+	AddResource(TEXT("Wheat"), TopDownPlayer->NumberOfFarmHouses*4);
+
+	//Brewery Building
+	RemoveResource(TEXT("Wheat"), TopDownPlayer->NumberOfBreweries);
+	AddResource(TEXT("Beer"), TopDownPlayer->NumberOfBreweries * 3);
+
+	//Bakery Building
+	RemoveResource(TEXT("Wheat"), TopDownPlayer->NumberOfBakeries);
+	AddResource(TEXT("Wheat"), TopDownPlayer->NumberOfBakeries*2);
+}
+
 int32 UResourceManager::GetResourceAmount(const FString& ResourceName) const
 {
 	const FResource* Resource = Resources.Find(ResourceName);

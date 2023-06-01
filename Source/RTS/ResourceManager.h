@@ -49,6 +49,9 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void PreloadResources();
+
+	UFUNCTION(BlueprintCallable)
+	void ProduceResources();
 	
 	UFUNCTION(BlueprintCallable)
 	int32 GetResourceAmount(const FString& ResourceName) const;
@@ -70,8 +73,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	int32 BreadDemand;
-
-protected:
 
 
 private:
