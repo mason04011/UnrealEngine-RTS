@@ -62,85 +62,83 @@ void ATopDownCameraController::Tick(float DeltaTime)
 
 	GEngine->AddOnScreenDebugMessage(3, 2.f, FColor::Cyan, FString::Printf(TEXT("TownHalls: %d"), NumberOfTownHalls));
 	//Zooming in and out using the spring arm camera component
-	{
-		if(bZoomingIn)
-		{
-			ZoomInput = 10;
-		}
-		if(bZoomingOut)
-		{
-			ZoomInput = -10;
-			
-		}
-		if(!bZoomingIn && !bZoomingOut)
-		{
-			ZoomInput = 0;
-		}
 
-		SpringArmLength += (ZoomInput * 400) * DeltaTime;
-		SpringArmComp->TargetArmLength = SpringArmLength;
-		bZoomingIn = false;
-		bZoomingOut = false;
+	if(bZoomingIn)
+	{
+		ZoomInput = 10;
+	}
+	if(bZoomingOut)
+	{
+		ZoomInput = -10;
+		
+	}
+	if(!bZoomingIn && !bZoomingOut)
+	{
+		ZoomInput = 0;
+	}
+	SpringArmLength += (ZoomInput * 400) * DeltaTime;
+	SpringArmComp->TargetArmLength = SpringArmLength;
+	bZoomingIn = false;
+	bZoomingOut = false;
+	
+	
+
+	FRotator NewRotation = GetActorRotation();
+	NewRotation.Yaw += (RotateYaw.X * 10) * DeltaTime;
+	SetActorRotation(NewRotation);
+	
+
+
+	
+	if (!MovementInput.IsZero())
+	{
+		//Scale our movement input axis values by 100 units per second
+		MovementInput = MovementInput.GetSafeNormal() * 600.0f;
+		FVector NewLocation = GetActorLocation();
+		NewLocation += GetActorForwardVector() * MovementInput.X * DeltaTime;
+		NewLocation += GetActorRightVector() * MovementInput.Y * DeltaTime;
+		SetActorLocation(NewLocation);
 	}
 	
-	//Rotate our actor's yaw, which will turn our camera because we're attached to it
-	{
-		FRotator NewRotation = GetActorRotation();
-		NewRotation.Yaw += (RotateYaw.X * 10) * DeltaTime;
-		SetActorRotation(NewRotation);
-	}
-
-	//Handle movement based on our "MoveX" and "MoveY" axes
-	{
-		if (!MovementInput.IsZero())
-		{
-			//Scale our movement input axis values by 100 units per second
-			MovementInput = MovementInput.GetSafeNormal() * 600.0f;
-			FVector NewLocation = GetActorLocation();
-			NewLocation += GetActorForwardVector() * MovementInput.X * DeltaTime;
-			NewLocation += GetActorRightVector() * MovementInput.Y * DeltaTime;
-			SetActorLocation(NewLocation);
-		}
-	}
 
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 	
 
-	{
-		//PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
+
+    //PlayerController->GetMousePosition(MousePosition.X, MousePosition.Y);
+    
+    PlayerController->DeprojectMousePositionToWorld(MousePosition, MouseDirection);
+
+
+    FCollisionQueryParams TraceParams(FName(TEXT("MouseTrace")), true, PlayerController);
+    TraceParams.bTraceComplex = true;
+    TraceParams.bReturnPhysicalMaterial = false;
+    TraceParams.AddIgnoredActor(this);
+    TraceParams.AddIgnoredActor(GetOwner());
+
+    
+    TraceStart = MousePosition;
+    TraceEnd = TraceStart + (MouseDirection * TraceDistance);  // Set the desired trace distance
+
+    if (GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, TraceParams))
+    {
+    	HitLocation = HitResult.ImpactPoint;
+    	HitRotation.Pitch = HitResult.ImpactPoint.Rotation().Pitch;
+
+    	ABuilding* BuildingClass = Cast<ABuilding>( HitResult.GetActor());
+    	
+    	if(BuildingClass)
+    	{
+    		bCanPlaceBuilding = false;
+    		GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Cyan, FString::Printf(TEXT("ActorName: %s"), *HitResult.GetActor()->GetName()));
+
+    	}else
+    	{
+    		bCanPlaceBuilding = true;
+    	}
+    	
+    }
 	
-		PlayerController->DeprojectMousePositionToWorld(MousePosition, MouseDirection);
-
-
-		FCollisionQueryParams TraceParams(FName(TEXT("MouseTrace")), true, PlayerController);
-		TraceParams.bTraceComplex = true;
-		TraceParams.bReturnPhysicalMaterial = false;
-		TraceParams.AddIgnoredActor(this);
-		TraceParams.AddIgnoredActor(GetOwner());
-
-		
-		TraceStart = MousePosition;
-		TraceEnd = TraceStart + (MouseDirection * TraceDistance);  // Set the desired trace distance
-
-		if (GetWorld()->LineTraceSingleByChannel(HitResult, TraceStart, TraceEnd, ECC_Visibility, TraceParams))
-		{
-			HitLocation = HitResult.ImpactPoint;
-			HitRotation.Pitch = HitResult.ImpactPoint.Rotation().Pitch;
-
-			ABuilding* BuildingClass = Cast<ABuilding>( HitResult.GetActor());
-			
-			if(BuildingClass)
-			{
-				bCanPlaceBuilding = false;
-				GEngine->AddOnScreenDebugMessage(1, 10.f, FColor::Cyan, FString::Printf(TEXT("ActorName: %s"), *HitResult.GetActor()->GetName()));
-
-			}else
-			{
-				bCanPlaceBuilding = true;
-			}
-			
-		}
-	}
 	
 }
 
